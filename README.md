@@ -12,6 +12,8 @@ music is played within a specific beats per minute (BPM) interval. Afterwards, t
 the radar chart to see what their average brain state was. Ideally, we would like to add a
 functionality that also allows the user to increase or decrease the tempo based on the results.
 However, this will depend on time constraints.
+
+
 #Inspiration:
 During our group discussion, one of our team members brought up the idea that during
 school, many students are having difficulty focusing on their studies because they are either in a
@@ -20,6 +22,8 @@ headset which can provide us with information about users’ brain activity stat
 up with the idea of a music app where user will be able to select the state they want to be in for
 the next hour or so. The app will constantly monitor user’s brain activity and play corresponding
 music so that user stays in their desired brain state.
+
+
 #Hypothesis:
 Using NeuroSky’s MindWave EEG headset, brain state information can be tracked
 through NeuroSky’s Brainwave Visualizer app and sent to the application as input. We know
