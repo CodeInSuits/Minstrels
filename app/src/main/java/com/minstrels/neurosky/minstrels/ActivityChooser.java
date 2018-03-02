@@ -34,7 +34,7 @@ public class ActivityChooser extends AppCompatActivity {
         });
 
         Button studyButton = (Button) findViewById(R.id.study);
-        workoutButton.setOnClickListener(new View.OnClickListener() {
+        studyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), MusicPlayer.class);
@@ -44,7 +44,7 @@ public class ActivityChooser extends AppCompatActivity {
         });
 
         Button sleepButton = (Button) findViewById(R.id.sleep);
-        workoutButton.setOnClickListener(new View.OnClickListener() {
+        sleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), MusicPlayer.class);

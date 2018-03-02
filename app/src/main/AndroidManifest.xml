@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.minstrels.neurosky.minstrels">
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +19,12 @@
         <activity android:name=".ActivityChooser" />
         <activity android:name=".SessionChooser" />
         <activity android:name=".MusicPlayer" />
-        <activity android:name=".StatsViewer"></activity>
+        <activity android:name=".StatsViewer" />
+
+        <service
+            android:name=".MusicService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

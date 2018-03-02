@@ -7,19 +7,19 @@
     tools:context="com.minstrels.neurosky.minstrels.MusicPlayer">
 
     <RelativeLayout
-        android:layout_width="378dp"
-        android:layout_height="550dp"
+        android:layout_width="588dp"
+        android:layout_height="814dp"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
-        tools:ignore="MissingConstraints">
+        tools:layout_editor_absoluteY="8dp">
 
         <TextView
-            android:text="Playing music"
-            android:layout_centerHorizontal="true"
-            android:textSize="80px"
             android:id="@+id/music_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Playing music"
+            android:textSize="80px" />
 
         <Button
             android:id="@+id/end_session"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="32dp"
             android:text="End Session" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

@@ -6,4 +6,30 @@
     android:layout_height="match_parent"
     tools:context="com.minstrels.neurosky.minstrels.SessionChooser">
 
+    <RelativeLayout
+        android:layout_width="591dp"
+        android:layout_height="814dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="4dp">
+
+        <Button
+            android:id="@+id/start_session"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="158dp"
+            android:text="Session test" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="21dp"
+            android:text="Which Session?"
+            android:textSize="80px" />
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
