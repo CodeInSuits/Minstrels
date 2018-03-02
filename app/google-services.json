@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "34507954184",
+    "firebase_url": "https://minstrels-b862a.firebaseio.com",
+    "project_id": "minstrels-b862a",
+    "storage_bucket": "minstrels-b862a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34507954184:android:fcf59e679625d6ff",
+        "android_client_info": {
+          "package_name": "com.minstrels.neurosky.minstrels"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "34507954184-umo8gfk9u8kli2p008rq2sgljjb06ae7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.minstrels.neurosky.minstrels",
+            "certificate_hash": "74a85a76f4ef08e62859b8e10144bae8f2f4927d"
+          }
+        },
+        {
+          "client_id": "34507954184-o2i06kjeu4kb95tts77gobe88474grcs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsNodmWo5t6qqJHgGMQMnG3QMfL0I3Y9k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "34507954184-o2i06kjeu4kb95tts77gobe88474grcs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
