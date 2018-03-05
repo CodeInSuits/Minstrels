@@ -14,20 +14,48 @@
         tools:layout_editor_absoluteY="8dp">
 
         <TextView
-            android:id="@+id/music_title"
+            android:id="@+id/music_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:text="Playing music"
-            android:textSize="80px" />
+            android:textSize="50sp" />
 
-        <Button
-            android:id="@+id/end_session"
+        <!--<ImageView-->
+            <!--android:id="@+id/album_art"-->
+            <!--android:layout_marginTop="50dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/music_type"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--app:srcCompat="@drawable/music" />-->
+        <com.github.mikephil.charting.charts.RadarChart
+            android:id="@+id/album_art"
+            android:layout_width="368dp"
+            android:layout_height="495dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <ImageButton
+            android:id="@+id/play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="32dp"
-            android:text="End Session" />
+            android:layout_alignStart="@+id/music_type"
+            android:layout_below="@+id/album_art"
+            android:layout_marginTop="46dp"
+            app:srcCompat="@drawable/pause" />
+
+        <ImageButton
+            android:id="@+id/stop_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/play_button"
+            android:layout_alignEnd="@+id/music_type"
+            app:srcCompat="@drawable/stop" />
+
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
