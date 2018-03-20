@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Minstrels</string>
+    <string name="Delta">Delta Waves</string>
+    <string name="Theta">Theta Waves</string>
+    <string name="Alpha">Alpha Waves</string>
+    <string name="Beta">Beta Waves</string>
+    <string name="Gamma">Gamma Waves</string>
 </resources>

@@ -7,19 +7,31 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
+import com.github.mikephil.charting.data.RadarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.mtechviral.mplaylib.MusicFinder;
 
 import java.util.ArrayList;
@@ -28,13 +40,23 @@ import java.util.List;
 public class MusicPlayer extends AppCompatActivity {
 
     ImageView albumArt = null;
-    ArrayList entries;
     private ProgressDialog pd;
 
     TextView songTitle = null;
     TextView songArtist = null;
 
     MediaPlayer mediaPlayer = new MediaPlayer();
+
+    private RadarChart mChart;
+    private SparseIntArray factors = new SparseIntArray(5);
+    private SparseIntArray scores = new SparseIntArray(5);
+    private SparseIntArray currentScores = new SparseIntArray(5);
+    private ArrayList<RadarEntry> entries = new ArrayList<>();
+    private ArrayList<IRadarDataSet> dataSets = new ArrayList<>();
+
+    Handler h = new Handler();
+    int delay = 15*1000; //1 second=1000 milisecond, 15*1000=15seconds
+    Runnable runnable;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -55,7 +77,7 @@ public class MusicPlayer extends AppCompatActivity {
         setContentView(R.layout.activity_music_player);
         pd = new ProgressDialog(MusicPlayer.this);
         pd.setMessage("loading");
-        entries = new ArrayList<>();
+
         loadDataForRadarChart();
 
         TextView title = (TextView) findViewById(R.id.music_type);
@@ -101,34 +123,66 @@ public class MusicPlayer extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mediaPlayer.stop();
+    }
+
     private void loadDataForRadarChart(){
         pd.show();
-        entries.add(new com.github.mikephil.charting.data.RadarEntry(4, 0));
-        entries.add(new com.github.mikephil.charting.data.RadarEntry(5, 1));
-        entries.add(new com.github.mikephil.charting.data.RadarEntry(6, 2));
-        entries.add(new com.github.mikephil.charting.data.RadarEntry(7, 3));
-        entries.add(new com.github.mikephil.charting.data.RadarEntry(8, 4));
-        RadarChart chart = (RadarChart) findViewById(R.id.album_art);
+        factors.append(1, R.string.Delta);
+        factors.append(2, R.string.Theta);
+        factors.append(3, R.string.Alpha);
+        factors.append(4, R.string.Beta);
+        factors.append(5, R.string.Gamma);
+        mChart = (RadarChart) findViewById(R.id.radar_chart);
 
-        RadarDataSet dataset_comp1 = new RadarDataSet(entries, "Initial Value");
-        dataset_comp1.setColor(Color.BLUE);
-        dataset_comp1.setDrawFilled(true);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setXOffset(0f);
+        xAxis.setYOffset(0f);
+        xAxis.setTextSize(11f);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
 
-        ArrayList dataSets = new ArrayList();
-        dataSets.add(dataset_comp1);
-        ArrayList labels = new ArrayList();
-        labels.add("Target");
-        labels.add("Passing");
-        labels.add("Skills");
-        labels.add("Dribbling");
-        labels.add("Penalty");
+            private String[] mFactors = new String[]{getString(factors.get(1)), getString(factors.get(2)),
+                    getString(factors.get(3)), getString(factors.get(4)), getString(factors.get(5))};
 
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mFactors[(int) value % mFactors.length];
+            }
+        });
+        YAxis yAxis = mChart.getYAxis();
+        yAxis.setAxisMinimum(0f);
+        yAxis.setAxisMaximum(50f);
+        yAxis.setTextSize(12f);
+        yAxis.setLabelCount(5, false);
+        yAxis.setDrawLabels(false);
 
-        RadarData data = new RadarData(dataSets);
-        chart.setData(data);
+        mChart.getLegend().setEnabled(true);
+        mChart.getDescription().setEnabled(true);
+        mChart.animateXY(
+                1400, 1400,
+                Easing.EasingOption.EaseInOutQuad,
+                Easing.EasingOption.EaseInOutQuad);
 
-        chart.invalidate();
-        chart.animate();
+        scores.clear();
+        // Or hardcode some test data:
+        scores.append(1, 18);
+        scores.append(2, 26);
+        scores.append(3, 35);
+        scores.append(4, 40);
+        scores.append(5, 53);
+
+        currentScores.clear();
+        // Or hardcode some test data:
+        currentScores.append(1, 38);
+        currentScores.append(2, 23);
+        currentScores.append(3, 42);
+        currentScores.append(4, 23);
+        currentScores.append(5, 22);
+
+        drawChart();
         pd.hide();
     }
 
@@ -146,26 +200,80 @@ public class MusicPlayer extends AppCompatActivity {
                 mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, songs.get(0).getURI());
                 mediaPlayer.start();
-                Toast.makeText(this, "size" + songs.get(0).getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Playing workout music", Toast.LENGTH_SHORT).show();
                 break;
             case "sleep":
                 mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, songs.get(1).getURI());
                 mediaPlayer.start();
-                Toast.makeText(this, "size" + songs.get(1).getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Playing sleep music", Toast.LENGTH_SHORT).show();
                 break;
             case "study":
                 mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
                 mediaPlayer.start();
-                Toast.makeText(this, "size" + songs.get(2).getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Playing study music", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 mediaPlayer.reset();
                 mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
                 mediaPlayer.start();
-                Toast.makeText(this, "size" + songs.get(2).getTitle(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Playing random music", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void drawChart() {
+
+        entries.clear();
+
+        for (int i = 1; i <= 5; i++) {
+            entries.add(new RadarEntry(scores.get(i)));
+        }
+
+        RadarDataSet dataSet = new RadarDataSet(entries, "Target range");
+        dataSet.setColor(Color.rgb(103, 255, 129));
+        dataSet.setFillColor(Color.rgb(103, 255, 129));
+        dataSet.setDrawFilled(true);
+
+        dataSets.add(dataSet);
+
+        RadarData data = new RadarData(dataSets);
+        data.setValueTextSize(11f);
+
+        data.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return String.valueOf((int) value);
+            }
+
+        });
+        mChart.setData(data);
+        mChart.invalidate();
+    }
+
+
+    @Override
+    protected void onResume() {
+        //start handler as activity become visible
+
+        h.postDelayed(new Runnable() {
+            public void run() {
+                //do something
+                scores.put(5, scores.get(5)+ 5);
+                drawChart();
+
+                runnable=this;
+                h.postDelayed(runnable, delay);
+            }
+        }, delay);
+
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        h.removeCallbacks(runnable); //stop handler when activity not visible
+        super.onPause();
     }
 
 }
