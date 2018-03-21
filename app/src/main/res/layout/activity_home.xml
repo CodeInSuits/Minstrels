@@ -39,8 +39,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignStart="@+id/start_button"
-            android:layout_marginBottom="249dp"
+            android:layout_marginBottom="122dp"
             android:text="Stats" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView2"
+            app:srcCompat="@drawable/brainwave" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

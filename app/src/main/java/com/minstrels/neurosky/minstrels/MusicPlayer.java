@@ -1,7 +1,9 @@
 package com.minstrels.neurosky.minstrels;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -15,7 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,27 +38,35 @@ import com.mtechviral.mplaylib.MusicFinder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MusicPlayer extends AppCompatActivity {
 
-    ImageView albumArt = null;
     private ProgressDialog pd;
 
-    TextView songTitle = null;
-    TextView songArtist = null;
-
     MediaPlayer mediaPlayer = new MediaPlayer();
+
 
     private RadarChart mChart;
     private SparseIntArray factors = new SparseIntArray(5);
     private SparseIntArray scores = new SparseIntArray(5);
-    private SparseIntArray currentScores = new SparseIntArray(5);
     private ArrayList<RadarEntry> entries = new ArrayList<>();
     private ArrayList<IRadarDataSet> dataSets = new ArrayList<>();
+    private SparseIntArray currentScores = new SparseIntArray(5);
+    private ArrayList<RadarEntry> currentEntries = new ArrayList<>();
+    private ArrayList<IRadarDataSet> currentDataSets = new ArrayList<>();
+    RadarDataSet currentDataSet;
+    View view;
+
+    private TextView textView;
+
+    int counter = 0;
 
     Handler h = new Handler();
-    int delay = 15*1000; //1 second=1000 milisecond, 15*1000=15seconds
+    int delay = 10*1000; //1 second=1000 milisecond, 15*1000=15seconds
     Runnable runnable;
+
+    private ProgressBar progressBar;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -78,12 +88,19 @@ public class MusicPlayer extends AppCompatActivity {
         pd = new ProgressDialog(MusicPlayer.this);
         pd.setMessage("loading");
 
+        textView = (TextView) findViewById(R.id.textView);
+
+
         loadDataForRadarChart();
 
         TextView title = (TextView) findViewById(R.id.music_type);
         Intent intent = getIntent();
         String activityType = intent.getStringExtra("Activity");
         title.setText("Playing " + activityType + " music...");
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        view = findViewById(R.id.progressBar_cyclic);
+        view.setVisibility(View.GONE);
 
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -123,6 +140,42 @@ public class MusicPlayer extends AppCompatActivity {
 
     }
 
+    private void createPlayer() {
+        MusicFinder musicFinder = new MusicFinder(getContentResolver());
+        musicFinder.prepare();
+        Toast.makeText(this, "Retrieving all songs", Toast.LENGTH_LONG).show();
+        List<MusicFinder.Song> songs = musicFinder.getAllSongs();
+
+        Intent intent = getIntent();
+        String activityType = intent.getStringExtra("Activity");
+
+        switch (activityType) {
+            case "workout":
+                mediaPlayer.reset();
+                mediaPlayer = MediaPlayer.create(this, songs.get(0).getURI());
+                mediaPlayer.start();
+                Toast.makeText(this, "Playing workout music", Toast.LENGTH_SHORT).show();
+                break;
+            case "sleep":
+                mediaPlayer.reset();
+                mediaPlayer = MediaPlayer.create(this, songs.get(1).getURI());
+                mediaPlayer.start();
+                Toast.makeText(this, "Playing sleep music", Toast.LENGTH_SHORT).show();
+                break;
+            case "study":
+                mediaPlayer.reset();
+                mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
+                mediaPlayer.start();
+                Toast.makeText(this, "Playing study music", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                mediaPlayer.reset();
+                mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
+                mediaPlayer.start();
+                Toast.makeText(this, "Playing random music", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -160,7 +213,7 @@ public class MusicPlayer extends AppCompatActivity {
         yAxis.setDrawLabels(false);
 
         mChart.getLegend().setEnabled(true);
-        mChart.getDescription().setEnabled(true);
+        mChart.getDescription().setEnabled(false);
         mChart.animateXY(
                 1400, 1400,
                 Easing.EasingOption.EaseInOutQuad,
@@ -172,7 +225,7 @@ public class MusicPlayer extends AppCompatActivity {
         scores.append(2, 26);
         scores.append(3, 35);
         scores.append(4, 40);
-        scores.append(5, 53);
+        scores.append(5, 60);
 
         currentScores.clear();
         // Or hardcode some test data:
@@ -186,56 +239,33 @@ public class MusicPlayer extends AppCompatActivity {
         pd.hide();
     }
 
-    private void createPlayer() {
-        MusicFinder musicFinder = new MusicFinder(getContentResolver());
-        musicFinder.prepare();
-        Toast.makeText(this, "Retrieving all songs", Toast.LENGTH_LONG).show();
-        List<MusicFinder.Song> songs = musicFinder.getAllSongs();
 
-        Intent intent = getIntent();
-        String activityType = intent.getStringExtra("Activity");
-
-        switch (activityType) {
-            case "workout":
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(this, songs.get(0).getURI());
-                mediaPlayer.start();
-                Toast.makeText(this, "Playing workout music", Toast.LENGTH_SHORT).show();
-                break;
-            case "sleep":
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(this, songs.get(1).getURI());
-                mediaPlayer.start();
-                Toast.makeText(this, "Playing sleep music", Toast.LENGTH_SHORT).show();
-                break;
-            case "study":
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
-                mediaPlayer.start();
-                Toast.makeText(this, "Playing study music", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                mediaPlayer.reset();
-                mediaPlayer = MediaPlayer.create(this, songs.get(2).getURI());
-                mediaPlayer.start();
-                Toast.makeText(this, "Playing random music", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void drawChart() {
-
         entries.clear();
 
         for (int i = 1; i <= 5; i++) {
             entries.add(new RadarEntry(scores.get(i)));
         }
 
+        currentEntries.clear();
+        for (int i = 1; i <= 5; i++) {
+            currentEntries.add(new RadarEntry(currentScores.get(i)));
+        }
+
+
         RadarDataSet dataSet = new RadarDataSet(entries, "Target range");
         dataSet.setColor(Color.rgb(103, 255, 129));
         dataSet.setFillColor(Color.rgb(103, 255, 129));
         dataSet.setDrawFilled(true);
 
+        currentDataSet = new RadarDataSet(currentEntries, "Current range");
+        currentDataSet.setColor(Color.rgb(235, 101, 101));
+        currentDataSet.setFillColor(Color.rgb(235, 101, 101));
+        currentDataSet.setDrawFilled(true);
+
         dataSets.add(dataSet);
+        dataSets.add(currentDataSet);
 
         RadarData data = new RadarData(dataSets);
         data.setValueTextSize(11f);
@@ -251,6 +281,34 @@ public class MusicPlayer extends AppCompatActivity {
         mChart.invalidate();
     }
 
+    private void updateCurrentScore() {
+        Random generator = new Random();
+        currentScores.clear();
+        for (int i = 1; i <= 5; i++) {
+            currentScores.append(i, generator.nextInt(60));
+        }
+        if(counter == 5) {
+            currentScores.put(5, 60);
+        }
+        counter++;
+    }
+
+
+    private void updateCurrentData() {
+        dataSets.remove(currentDataSet);
+
+        currentEntries.clear();
+        for (int i = 1; i <= 5; i++) {
+            currentEntries.add(new RadarEntry(currentScores.get(i)));
+        }
+        currentDataSet = new RadarDataSet(currentEntries, "Current range");
+        currentDataSet.setColor(Color.rgb(235, 101, 101));
+        currentDataSet.setFillColor(Color.rgb(235, 101, 101));
+        currentDataSet.setDrawFilled(true);
+        dataSets.add(currentDataSet);
+        mChart.invalidate();
+    }
+
 
     @Override
     protected void onResume() {
@@ -258,10 +316,49 @@ public class MusicPlayer extends AppCompatActivity {
 
         h.postDelayed(new Runnable() {
             public void run() {
-                //do something
-                scores.put(5, scores.get(5)+ 5);
-                drawChart();
+                view.setVisibility(View.VISIBLE);
+                view.postDelayed(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Reading new data from headset", Toast.LENGTH_SHORT).show();
+                        view.setVisibility(View.GONE);
+                    }
+                }, 3000);
+                updateCurrentScore();
+                updateCurrentData();
+                int target = 60;
+                double current = currentScores.get(5);
+                int progressStatus = (int)(current/target*100);
+                if(progressStatus == 100) {
+                    mediaPlayer.pause();
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(MusicPlayer.this);
+                    builder1.setMessage("Goal reached! You are ready to work out!");
+                    builder1.setCancelable(true);
 
+                    builder1.setPositiveButton(
+                            "Go back to home",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    onBackPressed();
+                                }
+                            });
+
+                    builder1.setNegativeButton(
+                            "Keep listening to music",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    mediaPlayer.start();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+
+                }
+                textView.setText(progressStatus+"/"+progressBar.getMax());
+                progressBar.setProgress(progressStatus);
+                Toast.makeText(getApplicationContext(), "Updated chart", Toast.LENGTH_SHORT).show();
                 runnable=this;
                 h.postDelayed(runnable, delay);
             }
