@@ -5,4 +5,10 @@
     <string name="Alpha">Alpha Waves</string>
     <string name="Beta">Beta Waves</string>
     <string name="Gamma">Gamma Waves</string>
+
+    <string name="ten">10s</string>
+    <string name="twenty">20s</string>
+    <string name="thirty">30s</string>
+    <string name="fourty">40</string>
+    <string name="fifty">50</string>
 </resources>

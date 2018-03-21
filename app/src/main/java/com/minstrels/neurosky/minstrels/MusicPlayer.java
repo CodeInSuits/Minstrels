@@ -65,7 +65,7 @@ public class MusicPlayer extends AppCompatActivity {
     Handler h = new Handler();
     int delay = 10*1000; //1 second=1000 milisecond, 15*1000=15seconds
     Runnable runnable;
-
+    Runnable progress;
     private ProgressBar progressBar;
 
     @Override
@@ -180,6 +180,8 @@ public class MusicPlayer extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         mediaPlayer.stop();
+        h.removeCallbacks(runnable);
+        view.removeCallbacks(progress);
     }
 
     private void loadDataForRadarChart(){
@@ -219,21 +221,49 @@ public class MusicPlayer extends AppCompatActivity {
                 Easing.EasingOption.EaseInOutQuad,
                 Easing.EasingOption.EaseInOutQuad);
 
-        scores.clear();
-        // Or hardcode some test data:
-        scores.append(1, 18);
-        scores.append(2, 26);
-        scores.append(3, 35);
-        scores.append(4, 40);
-        scores.append(5, 60);
+        Intent intent = getIntent();
+        String activityType = intent.getStringExtra("Activity");
+        Random generator = new Random();
+        switch (activityType) {
+            case "workout":
+                scores.clear();
+                // Or hardcode some test data:
+                scores.append(1, generator.nextInt(60));
+                scores.append(2, generator.nextInt(60));
+                scores.append(3, generator.nextInt(60));
+                scores.append(4, generator.nextInt(60));
+                scores.append(5, 60);
+                break;
+            case "sleep":
+                scores.clear();
+                // Or hardcode some test data:
+                scores.append(1, 60);
+                scores.append(2, generator.nextInt(60));
+                scores.append(3, generator.nextInt(60));
+                scores.append(4, generator.nextInt(60));
+                scores.append(5, generator.nextInt(60));
+                break;
+            case "study":
+                scores.clear();
+                // Or hardcode some test data:
+                scores.append(1, generator.nextInt(60));
+                scores.append(2, generator.nextInt(60));
+                scores.append(3, generator.nextInt(60));
+                scores.append(4, 60);
+                scores.append(5, generator.nextInt(60));
+                break;
+            default:
+
+        }
+
 
         currentScores.clear();
         // Or hardcode some test data:
-        currentScores.append(1, 38);
-        currentScores.append(2, 23);
-        currentScores.append(3, 42);
-        currentScores.append(4, 23);
-        currentScores.append(5, 22);
+        currentScores.append(1, generator.nextInt(60));
+        currentScores.append(2, generator.nextInt(60));
+        currentScores.append(3, generator.nextInt(60));
+        currentScores.append(4, generator.nextInt(60));
+        currentScores.append(5, generator.nextInt(60));
 
         drawChart();
         pd.hide();
@@ -283,6 +313,7 @@ public class MusicPlayer extends AppCompatActivity {
 
     private void updateCurrentScore() {
         Random generator = new Random();
+        counter++;
         currentScores.clear();
         for (int i = 1; i <= 5; i++) {
             currentScores.append(i, generator.nextInt(60));
@@ -290,7 +321,7 @@ public class MusicPlayer extends AppCompatActivity {
         if(counter == 5) {
             currentScores.put(5, 60);
         }
-        counter++;
+
     }
 
 
@@ -318,9 +349,12 @@ public class MusicPlayer extends AppCompatActivity {
             public void run() {
                 view.setVisibility(View.VISIBLE);
                 view.postDelayed(new Runnable() {
+
                     public void run() {
+                        progress = this;
                         Toast.makeText(getApplicationContext(), "Reading new data from headset", Toast.LENGTH_SHORT).show();
                         view.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), "Updated chart", Toast.LENGTH_SHORT).show();
                     }
                 }, 3000);
                 updateCurrentScore();
@@ -358,7 +392,6 @@ public class MusicPlayer extends AppCompatActivity {
                 }
                 textView.setText(progressStatus+"/"+progressBar.getMax());
                 progressBar.setProgress(progressStatus);
-                Toast.makeText(getApplicationContext(), "Updated chart", Toast.LENGTH_SHORT).show();
                 runnable=this;
                 h.postDelayed(runnable, delay);
             }
