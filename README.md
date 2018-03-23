@@ -1,4 +1,4 @@
-#Idea:
+# Idea:
 For our project, we would like to build an Android web application using the NeuroSky
 headset. The function of our application would be to play music at specific tempos to help the
 user achieve desired brain states. The average values of the raw data over the given time
@@ -14,7 +14,7 @@ functionality that also allows the user to increase or decrease the tempo based 
 However, this will depend on time constraints.
 
 
-#Inspiration:
+# Inspiration:
 During our group discussion, one of our team members brought up the idea that during
 school, many students are having difficulty focusing on their studies because they are either in a
 state of drowsiness or hyperness. We also know the capabilities of NeuroSky’s MindWave EEG
@@ -24,7 +24,7 @@ the next hour or so. The app will constantly monitor user’s brain activity and
 music so that user stays in their desired brain state.
 
 
-#Hypothesis:
+# Hypothesis:
 Using NeuroSky’s MindWave EEG headset, brain state information can be tracked
 through NeuroSky’s Brainwave Visualizer app and sent to the application as input. We know
 that brain oscillations are categorized (delta, theta, alpha, beta, and gamma) according to
@@ -35,3 +35,7 @@ and send them through the bluetooth to our application integrated with NeuroSky�
 development kit. From there, we can transfer the data at a certain rate, process and translate
 the it, then send an API request to Spotify to get songs that will help user to achieve the
 oscillations of their desire.
+
+
+# Video Walkthrough:
+[Link to Youtube Video](https://youtu.be/V0hr8A_bs40)
